@@ -59,7 +59,7 @@ def f_to_string(fname):
     class_name = Path(fname).name
     class_name = class_name[:class_name.rfind('_')]
     return ','.join([
-                    fname,
+                    str(Path(fname).with_suffix('.jpg')),
                     str(x1),
                     str(y1),
                     str(x2),
