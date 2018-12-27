@@ -58,12 +58,13 @@ def f_to_string(fname):
 
     class_name = Path(fname).name
     class_name = class_name[:class_name.rfind('_')]
-    return fname       + ',' +\
-           str(x1)     + ',' +\
-           str(y1)     + ',' +\
-           str(x2)     + ',' +\
-           str(y2)     + ',' +\
-           class_name
+    return ','.join([
+                    fname,
+                    str(x1),
+                    str(y1),
+                    str(x2),
+                    str(y2),
+                    class_name])
 
 
 with open(annotations_train_f, 'w') as f:
