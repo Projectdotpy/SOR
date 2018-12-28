@@ -18,6 +18,10 @@ from matplotlib import pyplot as plt
 import tensorflow as tf
 import pandas as pd
 import os
+import random
+
+from pathlib import Path
+
 from tqdm import tqdm
 
 from sklearn.metrics import average_precision_score
@@ -35,7 +39,6 @@ from keras.models import Model
 from keras.utils import generic_utils
 from keras.engine import Layer, InputSpec
 from keras import initializers, regularizers
-
 
 # #### Config setting
 
@@ -1206,7 +1209,7 @@ class_to_color = {class_mapping[v]: np.random.randint(0, 255, 3) for v in class_
 
 # In[ ]:
 
-train_imgs = os.listdir(train_base_path)
+train_imgs = list(filter(lambda e: Path(e).suffix == '.jpg', os.listdir(train_base_path)))
 test_imgs = os.listdir(test_base_path)
 
 imgs_path = []
@@ -1239,7 +1242,10 @@ metadata_per_class = {
 features_per_class = {}
 metadata_per_class = {}
 
-for img_name in tqdm(train_imgs):
+max_imgs = 200
+
+random.Random(42).shuffle(train_imgs)
+for img_name in tqdm(train_imgs[:max_imgs]):
 
     if not img_name.lower().endswith(('.bmp', '.jpeg', '.jpg', '.png', '.tif', '.tiff')):
         continue
@@ -1329,7 +1335,7 @@ for img_name in tqdm(train_imgs):
     for jk in range(1):
         (x1, y1, x2, y2) = new_boxes[jk,:]
         features = model_roi_pooling.predict([F, np.reshape(feature_img_box_mapping[(x1, y1, x2, y2)], (1,1,4))])
-
+        features = features.reshape((-1,))
         # Append feature of current box
         features_per_class[key] = features_per_class.get(key, [])
         features_per_class[key].append(features)
@@ -1367,10 +1373,10 @@ for key in features_per_class:
 retrieval_db_path = Path('retrieval_db')
 os.mkdir(retrieval_db_path)
 
-with open(retrieval_db_path / 'features_per_class', 'w') as f:
+with open(retrieval_db_path / 'features_per_class', 'wb') as f:
     pickle.dump(features_per_class, f)
 
-with open(retrieval_db_path / 'metadata_per_class', 'w') as f:
+with open(retrieval_db_path / 'metadata_per_class', 'wb') as f:
     pickle.dump(metadata_per_class, f)
 print("done")
 exit()
