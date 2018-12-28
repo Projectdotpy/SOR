@@ -108,3 +108,6 @@ venv.bak/
 
 data/
 data.old/
+model/
+retrieval_db/
+query/
