@@ -25,6 +25,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 from sklearn.metrics import average_precision_score
+from sklearn.metrics.pairwise import cosine_similarity
 
 from keras import backend as K
 from keras.optimizers import Adam, SGD, RMSprop
@@ -1222,11 +1223,66 @@ all_imgs = []
 classes = {}
 
 
+def concat_query_result2(image_names):
+  images = []
+  max_width = 0 # find the max width of all the images
+  max_height = 0
+
+  for name in image_names:
+      # open all images and find their sizes
+      images.append(cv2.imread(name))
+      max_width = max(max_width, images[-1].shape[1])
+      max_height = max(max_height, images[-1].shape[0])
+
+  last_h_pixel = int(max_width * len(image_names) / 2 + 1)
+  # create a new array with a size large enough to contain all the images
+  final_image = np.zeros((max_height * 2, last_h_pixel, 3),dtype=np.uint8)
+
+  current_y = 0 # keep track of where your current image was last placed in the y coordinate
+  current_x = 0
+  for image in images:
+    if current_x + image.shape[1] > last_h_pixel:
+      current_y += max_height
+      current_x = 0
+
+    final_image[current_y:image.shape[0]+current_y,current_x:current_x + image.shape[1],:] = image
+    current_x += image.shape[1]
+
+  return final_image
+
+def concat_query_result(image_names):
+  images = []
+  max_width = 0 # find the max width of all the images
+  total_height = 0 # the total height of the images (vertical stacking)
+
+  for name in image_names:
+      # open all images and find their sizes
+      images.append(cv2.imread(name))
+      if images[-1].shape[1] > max_width:
+          max_width = images[-1].shape[1]
+      total_height += images[-1].shape[0]
+
+  # create a new array with a size large enough to contain all the images
+  final_image = np.zeros((total_height,max_width,3),dtype=np.uint8)
+
+  current_y = 0 # keep track of where your current image was last placed in the y coordinate
+  for image in images:
+      # add an image to the final array and increment the y coordinate
+      final_image[current_y:image.shape[0]+current_y,:image.shape[1],:] = image
+      current_y += image.shape[0]
+
+  return final_image
+
 # In[37]:
 
 
 # If the box classification value is less than this, we ignore this box
 bbox_threshold = 0.7
+
+
+retrieval_db_path = Path('retrieval_db')
+
+query = True
 
 '''
 features_per_class = {
@@ -1242,14 +1298,29 @@ metadata_per_class = {
 features_per_class = {}
 metadata_per_class = {}
 
-max_imgs = 200
-
 random.Random(42).shuffle(train_imgs)
-for img_name in tqdm(train_imgs[:max_imgs]):
+
+if query:
+  with open(retrieval_db_path / 'features_per_class', 'rb') as f:
+    features_per_class = pickle.load(f)
+  
+  with open(retrieval_db_path / 'metadata_per_class', 'rb') as f:
+    metadata_per_class = pickle.load(f)
+  
+  train_imgs = list(filter(lambda e: Path(e).suffix == '.jpg', os.listdir('query')))
+  train_base_path = 'query/'
+
+
+# TODO: Remove this
+max_imgs = 200
+train_imgs = train_imgs[:max_imgs]
+
+for img_name in tqdm(train_imgs):
 
     if not img_name.lower().endswith(('.bmp', '.jpeg', '.jpg', '.png', '.tif', '.tiff')):
         continue
     st = time.time()
+
     filepath = os.path.join(train_base_path, img_name)
 
     img = cv2.imread(filepath)
@@ -1336,41 +1407,55 @@ for img_name in tqdm(train_imgs[:max_imgs]):
         (x1, y1, x2, y2) = new_boxes[jk,:]
         features = model_roi_pooling.predict([F, np.reshape(feature_img_box_mapping[(x1, y1, x2, y2)], (1,1,4))])
         features = features.reshape((-1,))
-        # Append feature of current box
-        features_per_class[key] = features_per_class.get(key, [])
-        features_per_class[key].append(features)
+
+        if not query:
+          # Append feature of current box
+          features_per_class[key] = features_per_class.get(key, [])
+          features_per_class[key].append(features)
 
         # Calculate real coordinates on original image
         (real_x1, real_y1, real_x2, real_y2) = get_real_coordinates(ratio, x1, y1, x2, y2)
 
-        # Append coordinates and filename
-        metadata_per_class[key] = metadata_per_class.get(key, [])
-        metadata_per_class[key].append((img_name, (real_x1, real_y1, real_x2, real_y2)))
+        if not query:
+          # Append coordinates and filename
+          metadata_per_class[key] = metadata_per_class.get(key, [])
+          metadata_per_class[key].append((img_name, (real_x1, real_y1, real_x2, real_y2)))
 
-        #cv2.rectangle(img,(real_x1, real_y1), (real_x2, real_y2), (int(class_to_color[key][0]), int(class_to_color[key][1]), int(class_to_color[key][2])),4)
+        cv2.rectangle(img,(real_x1, real_y1), (real_x2, real_y2), (int(class_to_color[key][0]), int(class_to_color[key][1]), int(class_to_color[key][2])),4)
 
-        #textLabel = '{}: {}'.format(key,int(100*new_probs[jk]))
-        #all_dets.append((key,100*new_probs[jk]))
+        textLabel = '{}: {}'.format(key,int(100*new_probs[jk]))
+        all_dets.append((key,100*new_probs[jk]))
 
-        #(retval,baseLine) = cv2.getTextSize(textLabel,cv2.FONT_HERSHEY_COMPLEX,1,1)
-        #textOrg = (real_x1, real_y1-0)
+        (retval,baseLine) = cv2.getTextSize(textLabel,cv2.FONT_HERSHEY_COMPLEX,1,1)
+        textOrg = (real_x1, real_y1-0)
 
-        #cv2.rectangle(img, (textOrg[0] - 5, textOrg[1]+baseLine - 5), (textOrg[0]+retval[0] + 5, textOrg[1]-retval[1] - 5), (0, 0, 0), 1)
-        #cv2.rectangle(img, (textOrg[0] - 5,textOrg[1]+baseLine - 5), (textOrg[0]+retval[0] + 5, textOrg[1]-retval[1] - 5), (255, 255, 255), -1)
-        #cv2.putText(img, textLabel, textOrg, cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), 1)
+        cv2.rectangle(img, (textOrg[0] - 5, textOrg[1]+baseLine - 5), (textOrg[0]+retval[0] + 5, textOrg[1]-retval[1] - 5), (0, 0, 0), 1)
+        cv2.rectangle(img, (textOrg[0] - 5,textOrg[1]+baseLine - 5), (textOrg[0]+retval[0] + 5, textOrg[1]-retval[1] - 5), (255, 255, 255), -1)
+        cv2.putText(img, textLabel, textOrg, cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), 1)
 
-    #print('Elapsed time = {}'.format(time.time() - st))
-    #print(all_dets)
-    #plt.figure(figsize=(10,10))
-    #plt.grid()
-    #plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
-    #plt.show()
+    if query:
+      pool = features_per_class[key]
+      sims = cosine_similarity(pool, np.array([features])).reshape(-1)
+      top = np.argsort(sims)[::-1]
+
+      tops = [str(Path('data/instre_monuments/train') / metadata_per_class[key][im][0]) for im in top[:10]]
+      print(tops)
+      concat_results = concat_query_result2(tops)
+
+      print('Elapsed time = {}'.format(time.time() - st))
+      print(all_dets)
+      plt.figure(figsize=(10,10))
+      plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
+      plt.show(block=False)
+      plt.figure(figsize=(10,10))
+      plt.imshow(cv2.cvtColor(concat_results,cv2.COLOR_BGR2RGB))
+      plt.show()
+      exit()
 
 # List to numpy n-dimensional array
 for key in features_per_class:
     features_per_class[key] = np.array(features_per_class[key])
 
-retrieval_db_path = Path('retrieval_db')
 os.mkdir(retrieval_db_path)
 
 with open(retrieval_db_path / 'features_per_class', 'wb') as f:
