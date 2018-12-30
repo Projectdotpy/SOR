@@ -113,7 +113,11 @@ def imgs_to_roi_features(imgs_paths, C, bbox_threshold, on_each_iter=None, train
         model_rpn.load_weights(C.model_path, by_name=True)
         model_classifier.load_weights(C.model_path, by_name=True)
     except Exception:
-        raise Exception(f"Could not load weights for model from file {C.model_path}")
+        # When calling this function from the server, given that
+        # it is multithreaded, an exception is raised since the model's
+        # weights were already loaded.
+        # A better approach would be to create the model only once
+        pass
 
     model_rpn.compile(optimizer="sgd", loss="mse")
     model_classifier.compile(optimizer="sgd", loss="mse")

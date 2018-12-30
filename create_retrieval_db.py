@@ -13,10 +13,19 @@ from faster_rcnn import Config
 from imgs_to_roi_features import imgs_to_roi_features
 
 
-def best_bbox(instance):
-    """Returns the index of the box having the highest confidence
+def best_bbox(instance, n=1):
+    """Returns the index of the box having the highest confidence if n=1
+    Otherwise a list of the best indices
     """
-    return max(enumerate(instance[1]), key=lambda t: t[1][0])[0]
+    result = list(
+        map(
+            lambda t: t[0],
+            sorted(enumerate(instance[1]), key=lambda t: t[1][0], reverse=True),
+        )
+    )
+    if n == 1:
+        return result[0]
+    return result[:n]
 
 
 if __name__ == "__main__":

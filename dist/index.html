@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <style>
+        .grid {
+                -webkit-columns: 4;
+                columns: 4;
+                -webkit-column-gap: 1em;
+                column-gap: 1em;
+            }
+            .grid__item {
+                margin-bottom: 1em;
+            }
+            .grid__item img {
+                width: 100%;
+            }
+
+            .dropzone {
+                background: white;
+                border-radius: 5px;
+                border: 2px dashed rgb(0, 135, 247);
+                border-image: none;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+                height: 30%;
+            }
+
+        </style>
+</head>
+
+<body>
+    <form action="/search" method="POST" enctype="multipart/form-data">
+        <input type=file name=file></input>
+        <input type=submit value=Upload />
+    </form>
+</body>
+
+</html>

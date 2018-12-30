@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+
+<head>
+    <style>
+        .grid {
+            -webkit-columns: 4;
+            columns: 4;
+            -webkit-column-gap: 1em;
+            column-gap: 2em;
+        }
+
+        .grid__item {
+            margin-bottom: 1em;
+        }
+
+        .grid__item img {
+            width: 100%;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.48), 0 6px 20px 0 rgba(0, 0, 0, 0.36);
+        }
+
+        .query {
+            width: 20%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.48), 0 6px 20px 0 rgba(0, 0, 0, 0.36);
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/search" method="POST" enctype="multipart/form-data">
+        <input type=file name=file></input>
+        <input type=submit value=Upload />
+    </form>
+    <div>
+        <div>
+            <img class="query" src="{{qimg}}">
+        </div>
+    </div>
+    <div class="grid">
+        {% for img in imgs %}
+        <div class="grid__item">
+            <img src="{{img}}">
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>
