@@ -15,7 +15,9 @@ Reference Paper: [An Improved Faster R-CNN for Same Object Retrieval](https://ie
     mkdir data             # data folder containing the dataset
     mkdir model            # model folder containing the weights of the nn
     mkdir dist/query       # will contain the imgs given as query by the client
-    ln -s data dist/data   # needed to display the result in the browser
+    cd dist
+    ln -s ../data data     # needed to display the result in the browser
+    cd ..
     ```
 
 * Download `instre_monuments.zip` [TODO: add link] which contains the subset
