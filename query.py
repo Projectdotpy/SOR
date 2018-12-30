@@ -11,6 +11,8 @@ from create_retrieval_db import best_bbox
 
 def images_similar_to(q_img_path, features_per_class, metadata_per_class, C):
     result = imgs_to_roi_features([q_img_path], C, bbox_threshold=0.7)
+    if not q_img_path in result:
+        return [], result
     instance = result[q_img_path]
     best_i = best_bbox(instance)
 

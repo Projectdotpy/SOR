@@ -37,6 +37,10 @@ def search():
     sim_images, result = images_similar_to(
         str(up_name), features_per_class, metadata_per_class, C
     )
+    if not str(up_name) in result:
+        return render_template(
+            "result.html", qimg=str(up_name.relative_to("dist")), imgs=[]
+        )
 
     instance = result[str(up_name)]
     best_is = best_bbox(instance, n=None)
