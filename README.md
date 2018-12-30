@@ -34,12 +34,20 @@ Reference Paper: [An Improved Faster R-CNN for Same Object Retrieval](https://ie
   This step will create some files in drive namely `model_frcnn_vgg.hdf5`,
   `record.csv` and `model_vgg_config.pickle`
 
-* Place the `model_frcnn_vgg.hdf5` and `record.csv` files under `model`
+* Place the `model_frcnn_vgg.hdf5` and `record.csv` files under `model` 
+  and `model_vgg_config.pickle` under `data/instre_monuments`
+  
+* Hack: create `SOR` directory to be compliant with the packaging
+  of the notebook and copy `faster_rcnn.py` for pickle deserialization
+  ```bash
+  mkdir SOR
+  cp faster_rcnn.py SOR
+  ```
 
 * Modify the `model_vgg_config.pickle` file as follows
   ```python
-    import pickle # TODO: not tested
-    from faster_rcnn.py import Config
+    import pickle
+    from faster_rcnn import Config
     with open('data/instre_monuments/model_vgg_config.pickle', 'rb') as f:
         C = pickle.load(f)
     C.model_path = 'model/model_frcnn_vgg.hdf5'
