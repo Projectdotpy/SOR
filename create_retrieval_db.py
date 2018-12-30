@@ -29,8 +29,7 @@ def best_bbox(instance, n=1):
 
 
 if __name__ == "__main__":
-    dataset_imgs = list(glob("data/instre_monuments/train/colosseum*.jpg"))[:10]
-    dataset_imgs += list(glob("data/instre_monuments/train/taj_mahal*.jpg"))[:10]
+    dataset_imgs = list(glob("data/instre_monuments/train/*.jpg"))
 
     with open("data/instre_monuments/model_vgg_config.pickle", "rb") as f_in:
         C = pickle.load(f_in)
