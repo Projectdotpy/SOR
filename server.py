@@ -39,23 +39,25 @@ def search():
     )
 
     instance = result[str(up_name)]
-    best_i = best_bbox(instance)
-    claz = instance[1][best_i][1]
-
-    (x1, y1, x2, y2) = instance[0][best_i]
-
+    best_is = best_bbox(instance, n=None)
     img = cv2.imread(str(up_name))
-    cv2.rectangle(
-        img,
-        (x1, y1),
-        (x2, y2),
-        (
-            int(class_to_color[claz][0]),
-            int(class_to_color[claz][1]),
-            int(class_to_color[claz][2]),
-        ),
-        4,
-    )
+
+    for best_i in best_is:
+        claz = instance[1][best_i][1]
+
+        (x1, y1, x2, y2) = instance[0][best_i]
+
+        cv2.rectangle(
+            img,
+            (x1, y1),
+            (x2, y2),
+            (
+                int(class_to_color[claz][0]),
+                int(class_to_color[claz][1]),
+                int(class_to_color[claz][2]),
+            ),
+            4,
+        )
     cv2.imwrite(str(up_name), img)
     return render_template(
         "result.html", qimg=str(up_name.relative_to("dist")), imgs=sim_images

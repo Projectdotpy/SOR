@@ -23,7 +23,9 @@ def best_bbox(instance, n=1):
             sorted(enumerate(instance[1]), key=lambda t: t[1][0], reverse=True),
         )
     )
-    if n == 1:
+    if not n:
+        return result
+    elif n == 1:
         return result[0]
     return result[:n]
 
