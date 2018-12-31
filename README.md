@@ -20,9 +20,9 @@ Reference Paper: [An Improved Faster R-CNN for Same Object Retrieval](https://ie
     cd ..
     ```
 
-* Download `instre_monuments.zip` [TODO: add link] which contains the subset
-  of images from the INSTRE dataset having only monuments and move it under the
-  `data` folder
+* Download `instre_monuments.zip` at this [link](https://drive.google.com/file/d/1gwN5qOGdxGFrUpJXX8QiEWHAw3BrShHW/view?usp=sharing). 
+  This dataset is a subset of images from the [INSTRE dataset](ftp://ftp.irisa.fr/local/texmex/corpus/instre/readme.htm)
+  having only monuments. Move it under the `data` folder.
 
 * Run `complex_data_transformation.sh` which will also run `create_csv.py`
 
@@ -30,7 +30,7 @@ Reference Paper: [An Improved Faster R-CNN for Same Object Retrieval](https://ie
     ./complex_data_transformation.sh
     ```
 
-* Train the Network with the notebook present at [TODO: add link].
+* Train the Network with the notebook present at this [link](https://colab.research.google.com/drive/1SKBuZs9TQkncj1lEZFhS0gnQUvXL8QYa).
   This step will create some files in drive namely `model_frcnn_vgg.hdf5`,
   `record.csv` and `model_vgg_config.pickle`
 
