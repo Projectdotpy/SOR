@@ -21,8 +21,7 @@ Reference Paper: [An Improved Faster R-CNN for Same Object Retrieval](https://ie
     ```
 
 * Download `instre_monuments.zip` at this [link](https://drive.google.com/file/d/1gwN5qOGdxGFrUpJXX8QiEWHAw3BrShHW/view?usp=sharing). 
-  This dataset is a subset of images from the [INSTRE](ftp://ftp.irisa.fr/local/texmex/corpus/instre/readme.htm) dataset
-  having only monuments. Move it under the `data` folder.
+  This dataset is a subset of images from the [INSTRE](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=597BFC482451728ED1C5F689F3458C7F?doi=10.1.1.709.9802&rep=rep1&type=pdf) dataset having only monuments. Move it under the `data` folder.
 
 * Run `complex_data_transformation.sh` which will also run `create_csv.py`
 
