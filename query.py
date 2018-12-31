@@ -14,16 +14,21 @@ def images_similar_to(q_img_path, features_per_class, metadata_per_class, C):
     if not q_img_path in result:
         return [], result
     instance = result[q_img_path]
-    best_i = best_bbox(instance)
+    best_is = best_bbox(instance, n=None)
 
-    best_feature = instance[2][best_i]
-    claz = instance[1][best_i][1]
+    similar_images = []
+    for best_i in best_is:
+        best_feature = instance[2][best_i]
+        claz = instance[1][best_i][1]
 
-    pool = features_per_class[claz]
+        pool = features_per_class[claz]
 
-    sims = cosine_similarity(pool, np.array([best_feature])).reshape(-1)
-    top = np.argsort(sims)[::-1]
+        sims = cosine_similarity(pool, np.array([best_feature])).reshape(-1)
+        top = np.argsort(sims)[::-1]
+        similar_images_in_claz = [(metadata_per_class[claz][im][0], sims[im]) for im in top]
 
-    similar_images = [metadata_per_class[claz][im][0] for im in top]
+        similar_images += similar_images_in_claz
+
+    similar_images = map(lambda t: t[0], sorted(similar_images, key=lambda t: t[1], reverse=True))
 
     return similar_images, result
