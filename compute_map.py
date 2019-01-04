@@ -137,9 +137,16 @@ if __name__ == "__main__":
     P = {}
     mAPs = []
 
-    imgs_paths = list(map(lambda img_data: img_data["path"], test_imgs))
-    with tqdm(total=len(imgs_paths)) as pbar:
-        feats = imgs_to_roi_features(imgs_paths, C, 0.7, on_each_iter=pbar.update)
+    feats = None
+    if not Path("test_feats").exists():
+        imgs_paths = list(map(lambda img_data: img_data["path"], test_imgs))
+        with tqdm(total=len(imgs_paths)) as pbar:
+            feats = imgs_to_roi_features(imgs_paths, C, 0.7, on_each_iter=pbar.update)
+        with open("test_feats", "wb") as f:
+            pickle.dump(feats, f)
+    else:
+        with open("test_feats", "rb") as f:
+            feats = pickle.load(f)
 
     for idx, img_data in enumerate(test_imgs):
         # img_data = (path, (x1,y1,x2,y2), class)
