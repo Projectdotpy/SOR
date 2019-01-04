@@ -55,3 +55,13 @@ Reference Paper: [An Improved Faster R-CNN for Same Object Retrieval](https://ie
   ```
 
 * Browse to http://127.0.0.1:5000/index.html
+
+
+
+## Team
+| [Davide Spallaccini](https://github.com/spallas) | [Beatrice Bevilacqua](https://github.com/beabevi) | [Anxhelo Xhebraj](https://github.com/Angelogeb) | [Indro Spinelli](https://github.com/spindro) |
+| --- | --- | --- | --- |
+| [![spallas](https://avatars0.githubusercontent.com/u/12670376?s=150&v=4)](https://github.com/spallas) | [![beabevi](https://avatars1.githubusercontent.com/u/29659657?s=150&v=4)](https://github.com/beabevi) | [![Angelogeb](https://avatars3.githubusercontent.com/u/11685380?s=150&u=0c36b33f53bd1f3f598cafb0b2deb8a31c2458cb&v=4)](https://github.com/Angelogeb) | [![spindro](https://avatars0.githubusercontent.com/u/15031193?s=150&v=4)](https://github.com/spindro)
+
+##
+<img src="https://i.imgur.com/Bg4KpDa.png" width="200px"/>
