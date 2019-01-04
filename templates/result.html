@@ -2,51 +2,36 @@
 <html>
 
 <head>
-    <style>
-        .grid {
-            -webkit-columns: 4;
-            columns: 4;
-            -webkit-column-gap: 1em;
-            column-gap: 2em;
-        }
-
-        .grid__item {
-            margin-bottom: 1em;
-        }
-
-        .grid__item img {
-            width: 100%;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.48), 0 6px 20px 0 rgba(0, 0, 0, 0.36);
-        }
-
-        .query {
-            width: 20%;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.48), 0 6px 20px 0 rgba(0, 0, 0, 0.36);
-        }
-    </style>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
-    <form action="/search" method="POST" enctype="multipart/form-data">
-        <input type=file name=file></input>
-        <input type=submit value=Upload />
-    </form>
+
+<div class="search-bar">
+
+    <div id="drop-area">
+        <form class="my-form" id="form_id" action="/search" method="POST" enctype="multipart/form-data">
+            <p>Upload one file.</p>
+            <input name="file" type="file" id="fileElem" onchange="handleFiles(this.files)">
+            <label class="button" for="fileElem">Select some files</label>
+        </form>
+        <div id="gallery"></div>
+    </div>
     <div>
-        <div>
-            <img class="query" src="{{qimg}}">
-        </div>
+        <img class="query" src="{{qimg}}">
     </div>
-    <div class="grid">
-        {% for img in imgs %}
-        <div class="grid__item">
-            <img src="{{img}}">
-        </div>
-        {% endfor %}
+</div>
+
+<div class="grid">
+    {% for img in imgs %}
+    <div class="grid__item">
+        <img src="{{img}}">
     </div>
+    {% endfor %}
+</div>
+
+<script src="/js/main.js"></script>
+
 </body>
 
 </html>

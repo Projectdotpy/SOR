@@ -1,9 +1,25 @@
 <html>
+<head>
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
 <body>
-    <form action="/search" method="POST" enctype="multipart/form-data">
-        <input type=file name=file></input>
-        <input type=submit value=Upload />
-    </form>
+<!--<form action="/search" method="POST" enctype="multipart/form-data">-->
+    <!--<input type=file name=file></input>-->
+    <!--<input type=submit value=Upload/>-->
+<!--</form>-->
+
+<div id="drop-area">
+  <form class="my-form" id="form_id" action="/search" method="POST" enctype="multipart/form-data">
+    <p>Upload one file.</p>
+    <input name="file" type="file" id="fileElem" onchange="handleFiles(this.files)">
+    <label class="button" for="fileElem">Select some files</label>
+  </form>
+    <div id="gallery" /></div>
+</div>
+
+<script src="js/main.js"></script>
+
 </body>
 
 </html>
