@@ -1,8 +1,7 @@
 .grid {
-    -webkit-columns: 4;
-    columns: 4;
-    -webkit-column-gap: 1em;
-    column-gap: 2em;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 40px;
 }
 
 .grid__item {
