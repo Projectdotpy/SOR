@@ -4,6 +4,10 @@ Same Object Retrieval project for Computer Vision @ Sapienza/Computer-Science M.
 
 Reference Paper: [An Improved Faster R-CNN for Same Object Retrieval](https://ieeexplore.ieee.org/document/7986979)
 
+## Tool
+
+![image](readme_imgs/front.png)
+
 ## [Slides](https://docs.google.com/presentation/d/131dm328uOeMdXZVKe87L_cg9ZjvruuswsrjVJDqtC2E/edit?usp=sharing)
 
 ## Instructions to run
