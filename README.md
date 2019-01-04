@@ -1,4 +1,4 @@
-# SOR
+<h1> SOR <img src="https://avatars3.githubusercontent.com/u/45969991?s=200&v=4" style="margin-bottom: -4px" height="25px"/> </h1>
 
 Same Object Retrieval project for Computer Vision @ Sapienza/Computer-Science M.Sc
 
