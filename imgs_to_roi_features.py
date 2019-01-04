@@ -20,13 +20,17 @@ def get_real_coordinates(ratio, x1, y1, x2, y2):
 
 def format_img_channels(img, C):
     """ formats the image channels based on config """
+    # Change image channel from BGR to RGB
     img = img[:, :, (2, 1, 0)]
     img = img.astype(np.float32)
     img[:, :, 0] -= C.img_channel_mean[0]
     img[:, :, 1] -= C.img_channel_mean[1]
     img[:, :, 2] -= C.img_channel_mean[2]
     img /= C.img_scaling_factor
+    # Change img shape from (height, width, channel) to (channel, height, width)
     img = np.transpose(img, (2, 0, 1))
+    # Expand one dimension at axis 0
+    # img shape becames (1, channel, height, width)
     img = np.expand_dims(img, axis=0)
     return img
 
@@ -44,13 +48,15 @@ def format_img_size(img, C):
         ratio = img_min_side / height
         new_width = int(ratio * width)
         new_height = int(img_min_side)
+    fx = width / float(new_width)
+    fy = height / float(new_height)
     img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
-    return img, ratio
+    return img, ratio, fx, fy
 
 
 def format_img(img, C):
     """ formats an image for model prediction based on config """
-    img, ratio = format_img_size(img, C)
+    img, ratio, fx, fy = format_img_size(img, C)
     img = format_img_channels(img, C)
     return img, ratio
 
@@ -65,7 +71,7 @@ def imgs_to_roi_features(imgs_paths, C, bbox_threshold, on_each_iter=None, train
     
     Returns:
         {
-            '<img_path>': ( list((x1,y1, x2, y2)), list((prob, class)), list(feature (7x7x512)) )
+            '<img_path>': ( list((x1, y1, x2, y2)), list((prob, class)), list(feature (7x7x512)) )
         }
     """
 
@@ -134,7 +140,6 @@ def imgs_to_roi_features(imgs_paths, C, bbox_threshold, on_each_iter=None, train
         img = cv2.imread(img_path)
         X, ratio = format_img(img, C)
 
-        # RBG to BGR
         X = np.transpose(X, (0, 2, 3, 1))
 
         # get output layer Y1, Y2 from the RPN and the feature maps F
