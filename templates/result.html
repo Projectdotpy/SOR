@@ -3,6 +3,15 @@
 
 <head>
     <link rel="stylesheet" href="/css/main.css">
+    <style>
+        {% for st in styles %}
+            .{{st.name}} {
+                border-left-color: rgb({{st.color[0]}}, {{st.color[1]}}, {{st.color[2]}});
+                border-left-width: 10px;
+                border-left-style: solid;
+            }
+        {% endfor %}
+    </style>
 </head>
 
 <body>
@@ -11,9 +20,9 @@
 
     <div id="drop-area">
         <form class="my-form" id="form_id" action="/search" method="POST" enctype="multipart/form-data">
-            <p>Upload one file.</p>
+            <p>Drop a file.</p>
             <input name="file" type="file" id="fileElem" onchange="handleFiles(this.files)">
-            <label class="button" for="fileElem">Select some files</label>
+            <label class="button" for="fileElem">Choose</label>
         </form>
         <div id="gallery"></div>
     </div>
@@ -21,11 +30,16 @@
         <img class="query" src="{{qimg}}">
     </div>
 </div>
-
+<div style="margin-bottom: 20px">
+    {% for lg in legends %}
+    <span class="legend" style="background-color: {{ lg.class_color}}"></span>
+    {{lg.class_name}}
+    {% endfor%}
+</div>
 <div class="grid">
     {% for img in imgs %}
     <div class="grid__item">
-        <img src="{{img}}">
+        <img src="{{img.path}}" class="{{img.class}}">
     </div>
     {% endfor %}
 </div>

@@ -4,6 +4,18 @@
     grid-gap: 40px;
 }
 
+body {
+    font-family: sans-serif;
+}
+
+.legend {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin: 0 10px 0 20px;
+    margin: 0;
+  }
+
 .grid__item {
     margin-bottom: 1em;
 }
@@ -31,7 +43,6 @@
     border: 2px dashed #ccc;
     border-radius: 20px;
     width: 25%;
-    font-family: sans-serif;
     margin: 20px auto;
     padding: 20px;
 }

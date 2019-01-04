@@ -21,6 +21,8 @@ app.config["ENV"] = "development"
 q_path = Path("dist/query")
 res_path = Path("dist/results")
 
+styles = []
+
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -46,6 +48,20 @@ def search():
     best_is = best_bbox(instance, n=None)
     img = cv2.imread(str(up_name))
 
+    classes_found = {i["class"] for i in sim_images}
+    legends = [
+        {
+            "class_color": "rgb("
+            + str(class_to_color[cl][0])
+            + ","
+            + str(class_to_color[cl][1])
+            + ","
+            + str(class_to_color[cl][2])
+            + ")",
+            "class_name": " ".join(cl.split("_")),
+        }
+        for cl in classes_found
+    ]
     for best_i in best_is:
         claz = instance[1][best_i][1]
 
@@ -56,15 +72,22 @@ def search():
             (x1, y1),
             (x2, y2),
             (
-                int(class_to_color[claz][0]),
-                int(class_to_color[claz][1]),
                 int(class_to_color[claz][2]),
+                int(class_to_color[claz][1]),
+                int(class_to_color[claz][0]),
             ),
             4,
         )
     cv2.imwrite(str(up_name), img)
+
+    print(legends)
+    print(list(sim_images)[:15])
     return render_template(
-        "result.html", qimg=str(up_name.relative_to("dist")), imgs=list(sim_images)[:15]
+        "result.html",
+        qimg=str(up_name.relative_to("dist")),
+        imgs=list(sim_images)[:15],
+        styles=styles,
+        legends=legends,
     )
 
 
@@ -78,6 +101,8 @@ if __name__ == "__main__":
     class_to_color = {
         class_mapping[v]: np.random.randint(0, 255, 3) for v in class_mapping
     }
+
+    styles = [{"name": c, "color": class_to_color[c]} for c in class_to_color]
 
     with open("retrieval_db/features_per_class", "rb") as f:
         features_per_class = pickle.load(f)
