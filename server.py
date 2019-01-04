@@ -64,7 +64,7 @@ def search():
         )
     cv2.imwrite(str(up_name), img)
     return render_template(
-        "result.html", qimg=str(up_name.relative_to("dist")), imgs=sim_images
+        "result.html", qimg=str(up_name.relative_to("dist")), imgs=list(sim_images)[:15]
     )
 
 
